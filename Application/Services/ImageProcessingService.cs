@@ -34,6 +34,7 @@ namespace Application.Services
         static extern IntPtr ProcessImageCpp(
             byte[] img, 
             long data_len,
+            string fileExtension,
             ref ImageInfo imTemplate);
 
         public async Task<ImageProcessResponse> ProcessImage(ImageProcessRequest request)
@@ -41,22 +42,23 @@ namespace Application.Services
             var errors = new List<ValidationResult>();
             var isValid = Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
 
-            //if (!isValid)
-            //{
-            //    return new ImageProcessResponse
-            //    {
-            //        Image = null,
-            //        IsSuccess = false,
-            //        Message = errors.ToString()
-            //    };
-            //}
+            if (!isValid)
+            {
+                return new ImageProcessResponse
+                {
+                    Image = null,
+                    IsSuccess = false,
+                    Message = errors.ToString()
+                };
+            }
 
             byte[] imageData;
             byte[] result;
-            int len;
 
             ImageInfo imInfo = new ImageInfo();
             MemoryStream convertedImageMemoryStream;
+
+            var extension = Path.GetExtension(request.File.FileName);
 
             using (var memoryStream = new MemoryStream())
             {
@@ -67,6 +69,7 @@ namespace Application.Services
                 IntPtr ptr = ProcessImageCpp(
                                 imageData, 
                                 memoryStream.Length,
+                                extension,
                                 ref imInfo);
 
                 byte[] imagePixels = new byte[imInfo.size];
@@ -81,7 +84,13 @@ namespace Application.Services
 
                 processed.Save("C:/Users/SillySharp/Desktop/outputCSharp.png");
 
-                return null;
+                return new ImageProcessResponse
+                {
+                    Image = null,
+                    IsSuccess = true,
+                    Message = string.Empty,
+                    bytes = imagePixels
+                };
 
                 //byte[] bytes = new byte[len];
                 //Marshal.Copy(ptr, bytes, 0, len);

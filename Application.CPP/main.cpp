@@ -42,6 +42,7 @@ EXPORTED_METHOD
 void ProcessImageCpp(
     unsigned char* img_pointer,
     long data_len,
+    const char* file_extension,
     ImageInfo& imInfo)
 {
     vector<unsigned char> inputImageBytes(img_pointer, img_pointer + data_len);
@@ -78,7 +79,7 @@ void ProcessImageCpp(
  /*   processed = img.clone();*/
 
     vector<unsigned char> bytes;
-    imencode(".png", img, bytes);
+    imencode(file_extension, img, bytes);
 
     imInfo.size = bytes.size();
     imInfo.data = (unsigned char*)calloc(imInfo.size, sizeof(unsigned char));
