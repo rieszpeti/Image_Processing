@@ -9,6 +9,7 @@
 #include <opencv2/highgui.hpp>
 #include <stdio.h>
 #include "main.h"
+#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -17,69 +18,60 @@ using namespace std;
 
 struct ImageInfo
 {
-    unsigned char* data;
-    int size;
+	unsigned char* data;
+	int size;
 };
 
 EXPORTED_METHOD
 bool ReleaseMemoryFromC(unsigned char* buf)
 {
-    if (buf == NULL)
-    {
-        return false;
-    }
+	if (buf == NULL)
+	{
+		return false;
+	}
 
-    free(buf);
-    return true;
-}
-
-void ProcessROI(cv::Mat& image, const cv::Rect& roi) {
-    cv::Mat roiImage = image(roi);
-    cv::GaussianBlur(roiImage, roiImage, cv::Size(5, 5), 0, 0);
+	free(buf);
+	return true;
 }
 
 EXPORTED_METHOD
 void ProcessImageCpp(
-    unsigned char* img_pointer,
-    long data_len,
-    const char* file_extension,
-    ImageInfo& imInfo)
+	unsigned char* img_pointer,
+	long data_len,
+	const char* file_extension,
+	ImageInfo& imInfo)
 {
-    vector<unsigned char> inputImageBytes(img_pointer, img_pointer + data_len);
-    cv::Mat img = imdecode(inputImageBytes, 1);
-    cv::Mat processed;
+	vector<unsigned char> inputImageBytes(img_pointer, img_pointer + data_len);
 
-    unsigned int numThreads = std::thread::hardware_concurrency();
+	cv::Mat img = imdecode(inputImageBytes, 1);
 
-    // Define ROIs
-    std::vector<cv::Rect> rois;
-    int rowsPerThread = img.rows / numThreads;
-    int colsPerThread = img.cols / numThreads;
+	int kernel_size = 5;
+	int sigma_x = 5;
+	int sigma_y = 5;
 
-    for (int r = 0; r < img.rows; r += rowsPerThread) {
-        for (int c = 0; c < img.cols; c += colsPerThread) {
-            cv::Rect roi(c, r, colsPerThread, rowsPerThread);
-            rois.push_back(roi);
-        }
-    }
+	// Apply separable Gaussian smoothing along rows in parallel
+	cv::parallel_for_(cv::Range(0, img.rows), [&](const cv::Range& range) {
+		for (int r = range.start; r < range.end; r++) {
+			cv::Mat row = img.row(r);
+			cv::GaussianBlur(row, row, cv::Size(kernel_size, 1), sigma_x, 0);
+		}
+		});
 
-    // Process ROIs using multiple threads
-    std::vector<std::thread> threads;
-    for (const auto& roi : rois) {
-        threads.emplace_back(ProcessROI, std::ref(img), roi);
-    }
+	// Apply separable Gaussian smoothing along columns in parallel
+	cv::parallel_for_(cv::Range(0, img.cols), [&](const cv::Range& range) {
+		for (int c = range.start; c < range.end; c++) {
+			cv::Mat col = img.col(c);
+			cv::GaussianBlur(col, col, cv::Size(1, kernel_size), 0, sigma_y);
+		}
+		});
 
-    // Wait for all threads to finish
-    for (auto& thread : threads) {
-        thread.join();
-    }
 
-    imwrite("C:/Users/SillySharp/Desktop/output.png", img);
+	cv::imwrite("C:/Users/SillySharp/Desktop/output.png", img);
 
-    vector<unsigned char> bytes;
-    imencode(file_extension, img, bytes);
+	vector<unsigned char> bytes;
+	cv::imencode(file_extension, img, bytes);
 
-    imInfo.size = bytes.size();
-    imInfo.data = (unsigned char*)calloc(imInfo.size, sizeof(unsigned char));
-    std::copy(bytes.begin(), bytes.end(), imInfo.data);
+	imInfo.size = bytes.size();
+	imInfo.data = (unsigned char*)calloc(imInfo.size, sizeof(unsigned char));
+	std::copy(bytes.begin(), bytes.end(), imInfo.data);
 }
