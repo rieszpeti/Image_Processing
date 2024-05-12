@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.CSharp.Interfaces;
+using Application.CSharp.ModelValidation;
+using Application.Interfaces;
 using Application.REPR;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,7 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IImageProcessingService, ImageProcessingService>();
+            services.AddScoped<IModelValidator, ModelValidator>();
 
             return services;
         }

@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IImageProcessingService
     {
-        Task<ImageProcessResponse> ProcessImage(ImageProcessRequest file);
+        Task<ImageProcessResponse> ProcessImage(ImageProcessRequest file, CancellationToken cancellationToken);
     }
 }

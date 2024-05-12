@@ -15,32 +15,9 @@ namespace Image_Processing_Backend.Endpoints
             IImageProcessingService service,
             CancellationToken ct = default) =>
             {
-                var image = await service.ProcessImage(new ImageProcessRequest { File = file });
-
-                //file.OpenReadStream();
-
-                //byte[] imageData;
-                //using (var memoryStream = new MemoryStream())
-                //{
-                //    //await image.Image.CopyToAsync(memoryStream);
-                //    var x = image.Image.OpenReadStream();
-                //    x.CopyTo(memoryStream);
-                //    imageData = memoryStream.ToArray();
-                //}
-
-                //return Results.Ok(new FileContentResult(image.Image, "image/png"));
-
-                //return Results.Ok();
-
-                //return new FileContentResult(image.bytes, "image/png");
-
-                //return Results.File(imageData, "image/png");
-
-                //var im = image.Image.OpenReadStream();
+                var image = await service.ProcessImage(new ImageProcessRequest { File = file }, ct);
 
                 return Results.File(image.bytes, $"image/{image.FileExtension}");
-
-                //return Results.File(image.Image.OpenReadStream(), "image/png");
             })
             .DisableAntiforgery();
         }

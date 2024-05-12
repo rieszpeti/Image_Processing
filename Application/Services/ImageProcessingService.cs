@@ -9,6 +9,7 @@ using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Application.CSharp.Interfaces;
 using Application.Interfaces;
 using Application.REPR;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,13 @@ namespace Application.Services
 {
     public class ImageProcessingService : IImageProcessingService
     {
+        private readonly IModelValidator _modelValidator;
+
+        public ImageProcessingService(IModelValidator modelValidator)
+        {
+            _modelValidator = modelValidator;
+        }
+
         public struct ImageInfo
         {
             public IntPtr data;
@@ -26,31 +34,52 @@ namespace Application.Services
 
         private const string dllPath = @"..\..\..\..\x64\Debug\Application.CPP.dll";
 
-        [DllImport(dllPath, /*ExactSpelling = false,*/ CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(dllPath, CallingConvention = CallingConvention.Cdecl)]
         static extern void ReleaseMemoryFromC(IntPtr buf);
 
-        //[DllImport(@"CDll2.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        [DllImport(dllPath, CallingConvention = CallingConvention.Cdecl/*, CharSet = CharSet.Ansi)*/)]
+        [DllImport(dllPath, CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr ProcessImageCpp(
-            byte[] img, 
+            byte[] img,
             long data_len,
             string fileExtension,
             ref ImageInfo imTemplate);
 
-        public async Task<ImageProcessResponse> ProcessImage(ImageProcessRequest request)
+        public async Task<ImageProcessResponse> ProcessImage(ImageProcessRequest request, CancellationToken cancellationToken)
         {
-            var errors = new List<ValidationResult>();
-            var isValid = Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+            var (isValid, errorMessage) = _modelValidator.Validate(request);
 
             if (!isValid)
             {
+                if (errorMessage is null)
+                {
+                    throw new ArgumentNullException(nameof(errorMessage));
+                }
                 return new ImageProcessResponse
                 {
                     Image = null,
                     IsSuccess = false,
-                    Message = errors.ToString()
+                    Message = errorMessage
                 };
             }
+
+            //var errors = new List<ValidationResult>();
+            //var isValid = Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+
+            //if (!isValid)
+            //{
+            //    StringBuilder errorMessage = new StringBuilder();
+            //    foreach (var error in errors)
+            //    {
+            //        errorMessage.Append(error.ErrorMessage).Append(" ");
+            //    }
+
+            //    return new ImageProcessResponse
+            //    {
+            //        Image = null,
+            //        IsSuccess = false,
+            //        Message = errorMessage.ToString()
+            //    };
+            //}
 
             byte[] imageData;
             byte[] result;
@@ -67,7 +96,7 @@ namespace Application.Services
                 result = new byte[imageData.Length];
 
                 IntPtr ptr = ProcessImageCpp(
-                                imageData, 
+                                imageData,
                                 memoryStream.Length,
                                 extension,
                                 ref imInfo);
@@ -80,10 +109,6 @@ namespace Application.Services
                 }
                 convertedImageMemoryStream = new MemoryStream(imagePixels);
 
-                System.Drawing.Image processed = new Bitmap(convertedImageMemoryStream);
-
-                processed.Save("C:/Users/SillySharp/Desktop/outputCSharp.png");
-
                 return new ImageProcessResponse
                 {
                     Image = null,
@@ -92,39 +117,7 @@ namespace Application.Services
                     bytes = imagePixels,
                     FileExtension = extension.Replace(".", string.Empty)
                 };
-
-                //byte[] bytes = new byte[len];
-                //Marshal.Copy(ptr, bytes, 0, len);
-
-                //using var stream = new MemoryStream(bytes);
-                //IFormFile file = new FormFile(
-                //    stream,
-                //    0,
-                //    bytes.Length,
-                //    "Data",
-                //    "fileName.png")
-                //{
-                //    Headers = new HeaderDictionary()
-                //};
-
-                //var img = Bitmap.FromHbitmap(ptr);
-
-                //img.Save("C:/Users/SillySharp/Desktop/outputCSharp.png");
-
-                //return new ImageProcessResponse
-                //{
-                //    Image = file,
-                //    IsSuccess = true,
-                //    Message = string.Empty,
-                //    bytes = bytes
-                //}; ;
-                ////using (var fileStream = new FileStream("C:/Users/SillySharp/Desktop/outputCSharp.png", FileMode.Create))
-                ////{
-                ////    await fileStream.WriteAsync(bytes, 0, bytes.Length);
-                ////}
             }
-
-            //return null;
         }
     }
 }
