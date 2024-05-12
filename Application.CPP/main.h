@@ -11,9 +11,3 @@
 extern "C" {
     MYLIBRARY_API std::string ImageProcess(const std::string& base64String);
 }
-
-
-//
-//extern "C" {
-//    MYLIBRARY_API void DoSomethingInC(unsigned short int ExampleParam, unsigned char AnotherExampleParam);
-//}

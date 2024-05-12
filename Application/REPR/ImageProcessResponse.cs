@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,12 +10,14 @@ namespace Application.REPR
 {
     public class ImageProcessResponse
     {
-        public FileStream? Image { get; init; }
+        public IFormFile? Image { get; init; }
 
         [Required]
         public required bool IsSuccess { get; init; }
 
         [Required]
         public required string Message { get; init; } = null!;
+
+        public byte[] bytes { get; set; }
     }
 }
