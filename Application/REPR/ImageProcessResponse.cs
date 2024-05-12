@@ -19,5 +19,7 @@ namespace Application.REPR
         public required string Message { get; init; } = null!;
 
         public byte[] bytes { get; set; }
+
+        public string FileExtension { get; set; }
     }
 }

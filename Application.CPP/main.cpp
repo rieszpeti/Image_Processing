@@ -76,65 +76,10 @@ void ProcessImageCpp(
 
     imwrite("C:/Users/SillySharp/Desktop/output.png", img);
 
- /*   processed = img.clone();*/
-
     vector<unsigned char> bytes;
     imencode(file_extension, img, bytes);
 
     imInfo.size = bytes.size();
     imInfo.data = (unsigned char*)calloc(imInfo.size, sizeof(unsigned char));
     std::copy(bytes.begin(), bytes.end(), imInfo.data);
-
-
-    //*length_of_out_result = img.total() * img.elemSize();
-    //unsigned char* raw_bytes = new unsigned char[*length_of_out_result];
-
-    //memcpy(raw_bytes, img.data, *length_of_out_result);
-
-    //return raw_bytes;
 }
-
-//EXPORTED_METHOD
-//unsigned char* ProcessImageCpp(
-//    unsigned char* img_pointer,
-//    long data_len,
-//    //unsigned char* out_result,
-//    int* length_of_out_result)
-//{
-//    vector<unsigned char> inputImageBytes(img_pointer, img_pointer + data_len);
-//    cv::Mat img = imdecode(inputImageBytes, 1);
-//
-//    unsigned int numThreads = std::thread::hardware_concurrency();
-//
-//    // Define ROIs
-//    std::vector<cv::Rect> rois;
-//    int rowsPerThread = img.rows / numThreads;
-//    int colsPerThread = img.cols / numThreads;
-//
-//    for (int r = 0; r < img.rows; r += rowsPerThread) {
-//        for (int c = 0; c < img.cols; c += colsPerThread) {
-//            cv::Rect roi(c, r, colsPerThread, rowsPerThread);
-//            rois.push_back(roi);
-//        }
-//    }
-//
-//    // Process ROIs using multiple threads
-//    std::vector<std::thread> threads;
-//    for (const auto& roi : rois) {
-//        threads.emplace_back(ProcessROI, std::ref(img), roi);
-//    }
-//
-//    // Wait for all threads to finish
-//    for (auto& thread : threads) {
-//        thread.join();
-//    }
-//
-//    imwrite("C:/Users/SillySharp/Desktop/output.png", img);
-//
-//    *length_of_out_result = img.total() * img.elemSize();
-//    unsigned char* raw_bytes = new unsigned char[*length_of_out_result];
-//
-//    memcpy(raw_bytes, img.data, *length_of_out_result);
-//
-//    return raw_bytes;
-//}

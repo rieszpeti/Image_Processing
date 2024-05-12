@@ -89,7 +89,8 @@ namespace Application.Services
                     Image = null,
                     IsSuccess = true,
                     Message = string.Empty,
-                    bytes = imagePixels
+                    bytes = imagePixels,
+                    FileExtension = extension.Replace(".", string.Empty)
                 };
 
                 //byte[] bytes = new byte[len];

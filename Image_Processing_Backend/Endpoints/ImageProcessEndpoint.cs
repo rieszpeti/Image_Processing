@@ -38,7 +38,7 @@ namespace Image_Processing_Backend.Endpoints
 
                 //var im = image.Image.OpenReadStream();
 
-                //return Results.File(image.Image.OpenReadStream(), "image/png");
+                return Results.File(image.bytes, $"image/{image.FileExtension}");
 
                 //return Results.File(image.Image.OpenReadStream(), "image/png");
             })
