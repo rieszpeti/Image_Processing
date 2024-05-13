@@ -56,6 +56,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
+At the moment this project only works on Windows!
+
 Setup WebApi as startup project and for x64.
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/1a6ec020-991e-41d3-93ee-42219d735bd5)
@@ -109,6 +111,15 @@ Running tests is only available via Test Explorer
 The project uses quite some packeges:
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/de86bf6c-f928-4484-9e65-3f42e4be0eb5)
+
+## Further improvements
+
+- implement REPR pattern to avoid exceptions and have more explanation about errors
+- using Fluent Validator for better validation abstraction
+- add background jobs or background worker for heavy calculations
+- add C++/CLI CLR wrapper
+- add linux support, because currently this only works on Windows
+- Add more tests
 
 ## License
 
