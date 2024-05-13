@@ -18,44 +18,53 @@ namespace Application.Services
 
         public async Task<ImageProcessResponse> ProcessImage(IFormFile file, CancellationToken cancellationToken)
         {
-
-            await _imageValidator.ValidateImageAsync(file, cancellationToken);
-
-            byte[] imageData;
-            byte[] result;
-
-            ImageInfo imInfo = new ImageInfo();
-            MemoryStream convertedImageMemoryStream;
-
-            var extension = Path.GetExtension(file.FileName);
-
-            using (var memoryStream = new MemoryStream())
+            try
             {
-                await file.CopyToAsync(memoryStream);
-                imageData = memoryStream.ToArray();
-                result = new byte[imageData.Length];
+                await _imageValidator.ValidateImageAsync(file, cancellationToken);
 
-                IntPtr ptr = ProcessImageCpp(
-                                imageData,
-                                memoryStream.Length,
-                                extension,
-                                ref imInfo);
+                byte[] imageData;
+                byte[] result;
 
-                byte[] imagePixels = new byte[imInfo.size];
-                Marshal.Copy(imInfo.data, imagePixels, 0, imInfo.size);
+                ImageInfo imInfo = new ImageInfo();
 
-                if (imInfo.data != IntPtr.Zero)
+                var extension = Path.GetExtension(file.FileName);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                using (var memoryStream = new MemoryStream())
                 {
-                    ReleaseMemoryFromC(imInfo.data);
+                    await file.CopyToAsync(memoryStream);
+                    imageData = memoryStream.ToArray();
+                    result = new byte[imageData.Length];
+
+                    IntPtr ptr = ProcessImageCpp(
+                                    imageData,
+                                    memoryStream.Length,
+                                    extension,
+                                    ref imInfo);
+
+                    byte[] imagePixels = new byte[imInfo.size];
+                    Marshal.Copy(imInfo.data, imagePixels, 0, imInfo.size);
+
+                    if (imInfo.data != IntPtr.Zero)
+                    {
+                        ReleaseMemoryFromC(imInfo.data);
+                    }
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    _imageValidator.ValidateEncoding(imagePixels, cancellationToken);
+
+                    return new ImageProcessResponse
+                    {
+                        bytes = imagePixels,
+                        FileExtension = extension.Replace(".", string.Empty)
+                    };
                 }
-
-                _imageValidator.ValidateEncoding(imagePixels, cancellationToken);
-
-                return new ImageProcessResponse
-                {
-                    bytes = imagePixels,
-                    FileExtension = extension.Replace(".", string.Empty)
-                };
+            }
+            catch (OperationCanceledException cancel)
+            {
+                throw;
             }
         }
     }

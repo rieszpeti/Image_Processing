@@ -15,12 +15,13 @@ namespace Application.CSharp.ModelValidation
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var allowedExtensions = new string[] { ".jpg", ".png" };
             var extension = Path.GetExtension(file.FileName).ToLower();
-            if (!allowedExtensions.Contains(extension))
+            var encodingType = extension switch
             {
-                throw new ArgumentException("Invalid file extension.");
-            }
+                ".jpg" => EncodingType.JPG,
+                ".png" => EncodingType.PNG,
+                _ => throw new ArgumentException("Invalid file extension.")
+            };
 
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -1,4 +1,3 @@
-using Application;
 using Image_Processing_Backend.Endpoints;
 using WebApi.Startup;
 
@@ -6,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.SetupSwagger();
 
-builder.SetupLogger();
+builder.SetupOpenTelemetry();
 
-builder.SetupMinimalApiEnumSupport();
+//builder.SetupLogger();
 
 builder.SetupLayers();
 
