@@ -44,7 +44,6 @@ namespace ImageProcessApp.Tests
             {
                 var filePaths = Directory.GetFiles(dirPath);
 
-
                 foreach (var path in filePaths)
                 {
                     if (System.Enum.IsDefined(typeof(EncodingType), Path.GetExtension(path)))
