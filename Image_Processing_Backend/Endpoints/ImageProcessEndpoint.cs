@@ -7,6 +7,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Image_Processing_Backend.Endpoints
 {
+    /// <summary>
+    /// Minimal api endpoints found here
+    /// </summary>
     public static class ImageProcessEndpoint
     {
         public static void MapImageProcessingEndpoints(this IEndpointRouteBuilder app)
@@ -15,6 +18,14 @@ namespace Image_Processing_Backend.Endpoints
             .DisableAntiforgery(); // unsafe, setup Antiforgery in PROD
         }
 
+        /// <summary>
+        /// calling service layer to process images
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="file"></param>
+        /// <param name="service"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         public static async Task<IResult> ProcessImage(
             ILogger logger, IFormFile file, IImageProcessingService service, CancellationToken ct = default)
         {

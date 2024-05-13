@@ -37,7 +37,7 @@ namespace ImageProcessApp.Tests
             IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
             // Act
-           var result = await ImageProcessEndpoint.ProcessImage(_mockLogger.Object, file, _mockImageProcessingService.Object, cancellationToken);
+            var result = await ImageProcessEndpoint.ProcessImage(_mockLogger.Object, file, _mockImageProcessingService.Object, cancellationToken);
 
             // Assert
             Assert.IsType<ProblemHttpResult>(result);

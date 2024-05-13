@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.CSharp.Services
 {
+    /// <summary>
+    /// You can use only in debug mode
+    /// </summary>
     internal static class CPPAdapter
     {
         public struct ImageInfo
@@ -15,12 +18,16 @@ namespace Application.CSharp.Services
             public int size;
         }
 
-        private const string dllPath = @"..\..\..\..\x64\Debug\Application.CPP.dll";
+#if DEBUG
+        private const string DllPath = @"..\..\..\..\x64\Debug\Application.CPP.dll";
+#else
+        private const string DllPath = @"..\..\..\..\x64\Release\Application.CPP.dll";
+#endif
 
-        [DllImport(dllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DllPath, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ReleaseMemoryFromC(IntPtr buf);
 
-        [DllImport(dllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DllPath, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr ProcessImageCpp(
                                             byte[] img,
                                             long data_len,

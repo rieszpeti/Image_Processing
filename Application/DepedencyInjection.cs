@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Application
 {
+    /// <summary>
+    /// You can register your services here
+    /// </summary>
     public static class DepedencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)

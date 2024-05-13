@@ -10,6 +10,9 @@ using static Application.CSharp.Services.CPPAdapter;
 
 namespace Application.Services
 {
+    /// <summary>
+    /// this class is highly dependent on CPPAdapter and uses C++ function to process image
+    /// </summary>
     public class ImageProcessingService : IImageProcessingService
     {
         private readonly ILogger _logger;
@@ -21,6 +24,16 @@ namespace Application.Services
             _imageValidator = imageValidator;
         }
 
+        /// <summary>
+        /// Steps of this function:
+        /// 1. Validate image
+        /// 2. call the C++ method and gets back an image via pointer
+        /// 3. validate the manipulated image in byte format
+        /// 4. returns the result object
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<ImageProcessResponse> ProcessImage(IFormFile file, CancellationToken cancellationToken)
         {
             try
