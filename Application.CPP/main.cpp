@@ -47,7 +47,7 @@ void ProcessImageCpp(
 	int sigma_x = 5;
 	int sigma_y = 5;
 
-	// Apply separable Gaussian smoothing along rows in parallel
+	// Apply Gaussian along rows in parallel
 	cv::parallel_for_(cv::Range(0, img.rows), [&](const cv::Range& range) {
 		for (int r = range.start; r < range.end; r++) {
 			cv::Mat row = img.row(r);
@@ -55,7 +55,7 @@ void ProcessImageCpp(
 		}
 		});
 
-	// Apply separable Gaussian smoothing along columns in parallel
+	// Apply Gaussian along columns in parallel
 	cv::parallel_for_(cv::Range(0, img.cols), [&](const cv::Range& range) {
 		for (int c = range.start; c < range.end; c++) {
 			cv::Mat col = img.col(c);
