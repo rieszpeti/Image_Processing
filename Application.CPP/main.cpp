@@ -1,5 +1,3 @@
-//main.cpp
-
 #include <string>
 #include <vector>
 #include <iostream>
