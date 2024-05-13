@@ -1,6 +1,10 @@
 # Project Title
 
-Image Process with C# webapi with C++ OpenCV module
+Image Process with C# WebApi with C++ OpenCV module
+
+## Goal of the project
+
+Send image image to a webapi and make some operations with opencv package.
 
 ## Project Architecture
 
@@ -25,7 +29,7 @@ The application receive an image in .png or .jpg format and make a Gaussian Blur
 To ensure the functionalities I added Serilog and Opentelemetry to make dashboards and see the metrics. You can see the setup in the WebApi layer.
 
 To make dashboard I used the new Aspire standalone application. The setup was quite easy I ran the following command:
-docker run --rm -it -p 18888:18888 -p 4317:18889 -d --name aspire-dashboard mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6
+ ```docker run --rm -it -p 18888:18888 -p 4317:18889 -d --name aspire-dashboard mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6 ```
 
 Then to get the token go to:
 docker->logs->Login to the dashboard at http://0.0.0.0:18888/login?t=yourToken
@@ -56,6 +60,8 @@ Setup WebApi as startup project and for x64.
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/1a6ec020-991e-41d3-93ee-42219d735bd5)
 
+Debug Mode
+
 To setup C++ project in debug mode follow the configuration below (right click on Application.CPP -> Properties):
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/3a47d53f-f6a5-40e6-909e-672b5bd7a585)
@@ -70,7 +76,7 @@ To setup C++ project in debug mode follow the configuration below (right click o
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/a70ec2eb-567e-416e-b1b6-e344db25aae1)
 
-### Installing
+### Release Mode
 
 To setup C++ project in release mode follow the configuration below (right click on Application.CPP -> Properties):
 
@@ -98,7 +104,7 @@ Running tests is only available via Test Explorer
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/ddd48c3c-aff2-4171-ba99-17f6d6e43d03)
 
-## Built With
+## Packages
 
 The project uses quite some packeges:
 
