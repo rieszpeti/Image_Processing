@@ -10,7 +10,7 @@ namespace Application.CSharp.Models
 {
     public class ImageProcessResponse
     {
-        public required byte[] bytes { get; init; }
+        public required byte[] Bytes { get; init; }
 
         public required string FileExtension { get; init; }
     }

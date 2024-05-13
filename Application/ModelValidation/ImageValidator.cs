@@ -1,12 +1,12 @@
-﻿using Application.Models;
+﻿using Application.CSharp.Interfaces;
+using Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using static System.Net.Mime.MediaTypeNames;
 using static Application.CSharp.ModelValidation.ValidatorOptions;
 
 namespace Application.CSharp.ModelValidation
 {
-    public class ImageValidator
+    public class ImageValidator : IImageValidator
     {
         private readonly ILogger _logger;
 
@@ -33,7 +33,7 @@ namespace Application.CSharp.ModelValidation
                 _ => throw new ArgumentException("Invalid file extension.")
             };
 
-            _logger.LogInformation("File extension: {extension}", extension);
+            _logger.LogInformation("File extension: {extension}", encodingType);
 
             cancellationToken.ThrowIfCancellationRequested();
 

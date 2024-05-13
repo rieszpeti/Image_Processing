@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using System.Threading.Channels;
+using Application.CSharp.Interfaces;
 using Application.CSharp.Models;
 using Application.CSharp.ModelValidation;
 using Application.Interfaces;
@@ -11,9 +13,9 @@ namespace Application.Services
     public class ImageProcessingService : IImageProcessingService
     {
         private readonly ILogger _logger;
-        private readonly ImageValidator _imageValidator;
+        private readonly IImageValidator _imageValidator;
 
-        public ImageProcessingService(ILogger logger, ImageValidator imageValidator)
+        public ImageProcessingService(ILogger logger, IImageValidator imageValidator)
         {
             _logger = logger;
             _imageValidator = imageValidator;
@@ -74,10 +76,15 @@ namespace Application.Services
 
                     return new ImageProcessResponse
                     {
-                        bytes = imagePixels,
+                        Bytes = imagePixels,
                         FileExtension = extension.Replace(".", string.Empty)
                     };
                 }
+            }
+            catch (SEHException ex)
+            {
+                _logger.LogCritical("Could not process image: {msg}", ex.Message);
+                throw;
             }
             catch (OperationCanceledException cancel)
             {
