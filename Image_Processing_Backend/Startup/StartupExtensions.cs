@@ -45,8 +45,6 @@ namespace WebApi.Startup
         {
             builder.Host.UseSerilog((context, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
-
-            builder.Services.AddSingleton(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger("DefaultLogger"));
         }
 
         public static void SetupOpenTelemetry(this WebApplicationBuilder builder)

@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace Application.CSharp.Services
 {
-    /// <summary>
-    /// You can use only in debug mode
-    /// </summary>
     internal static class CPPAdapter
     {
         public struct ImageInfo
