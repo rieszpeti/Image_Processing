@@ -8,8 +8,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <stdio.h>
-#include "main.h"
-#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -64,9 +62,6 @@ void ProcessImageCpp(
 			cv::GaussianBlur(col, col, cv::Size(1, kernel_size), 0, sigma_y);
 		}
 		});
-
-
-	cv::imwrite("C:/Users/SillySharp/Desktop/output.png", img);
 
 	vector<unsigned char> bytes;
 	cv::imencode(file_extension, img, bytes);
