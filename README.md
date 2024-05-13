@@ -1,4 +1,4 @@
-# Project Title
+# Image Processing
 
 Image Process with C# WebApi with C++ OpenCV module
 
@@ -114,6 +114,7 @@ The project uses quite some packeges:
 
 ## Further improvements
 
+- add Docker support
 - implement REPR pattern to avoid exceptions and have more explanation about errors
 - using Fluent Validator for better validation abstraction
 - add background jobs or background worker for heavy calculations
