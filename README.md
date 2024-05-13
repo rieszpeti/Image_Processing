@@ -34,7 +34,7 @@ To make dashboard I used the new Aspire standalone application. The setup was qu
 Then to get the token go to:
 docker->logs->Login to the dashboard at http://0.0.0.0:18888/login?t=yourToken
 
-// more about here: https://www.youtube.com/watch?v=A2pKhNQoQUU&t=400s
+More about here: https://www.youtube.com/watch?v=A2pKhNQoQUU&t=400s
 
 Some pictures about the metrics:
 
