@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace Application
         {
             services.AddScoped<IImageProcessingService, ImageProcessingService>();
             services.AddScoped<ImageValidator>();
+
+            services.AddSingleton(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger("DefaultLogger"));
 
             return services;
         }

@@ -1,15 +1,25 @@
 ﻿using Application.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using static System.Net.Mime.MediaTypeNames;
+using static Application.CSharp.ModelValidation.ValidatorOptions;
 
 namespace Application.CSharp.ModelValidation
 {
     public class ImageValidator
     {
+        private readonly ILogger _logger;
+
+        public ImageValidator(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task ValidateImageAsync(IFormFile file, CancellationToken cancellationToken)
         {
             if (file is null || file.Length == 0)
             {
+                _logger.LogInformation("File is null or empty!");
                 throw new ArgumentNullException("The file cannot be null or empty.");
             }
 
@@ -23,11 +33,14 @@ namespace Application.CSharp.ModelValidation
                 _ => throw new ArgumentException("Invalid file extension.")
             };
 
+            _logger.LogInformation("File extension: {extension}", extension);
+
             cancellationToken.ThrowIfCancellationRequested();
 
             var maxFileSize = 5 * 1024 * 1024; // 5 MB
             if (file.Length > maxFileSize)
             {
+                _logger.LogInformation("File is bigger than limit: {actualSize}", file.Length);
                 throw new ArgumentException("File size exceeds the maximum limit.");
             }
 
@@ -46,9 +59,6 @@ namespace Application.CSharp.ModelValidation
         {
             const int INT_SIZE = 4; // We only need to check the first four bytes of the file / byte array.
 
-            var png = new byte[] { 137, 80, 78, 71 };                // PNG
-            var jpeg = new byte[] { 255, 216, 255, 224 };            // jpeg
-
             // Copy the first 4 bytes into our buffer 
             var buffer = new byte[INT_SIZE];
             System.Buffer.BlockCopy(byteArray, 0, buffer, 0, INT_SIZE);
@@ -57,9 +67,11 @@ namespace Application.CSharp.ModelValidation
 
             if (png.SequenceEqual(buffer.Take(png.Length)))
             {
+                _logger.LogInformation("Fileformat: {format}", nameof(png));
             }
-            else if (jpeg.SequenceEqual(buffer.Take(jpeg.Length)))
+            else if (jpg.SequenceEqual(buffer.Take(jpg.Length)))
             {
+                _logger.LogInformation("Fileformat: {format}", nameof(jpg));
             }
             else
             {

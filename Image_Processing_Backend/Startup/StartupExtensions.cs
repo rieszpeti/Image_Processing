@@ -41,11 +41,13 @@ namespace WebApi.Startup
             });
         }
 
-        //public static void SetupLogger(this WebApplicationBuilder builder)
-        //{
-        //    builder.Host.UseSerilog((context, configuration) =>
-        //        configuration.ReadFrom.Configuration(context.Configuration));
-        //}
+        public static void SetupSerilogLogger(this WebApplicationBuilder builder)
+        {
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
+
+            builder.Services.AddSingleton(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger("DefaultLogger"));
+        }
 
         public static void SetupOpenTelemetry(this WebApplicationBuilder builder)
         {

@@ -8,7 +8,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5297"
+      "applicationUrl": "http://localhost:5297",
+      "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317",
+      "OTEM_METRIC_EXPORT_INTERVAL": "1000"
     },
     "https": {
       "commandName": "Project",
