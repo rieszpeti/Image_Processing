@@ -60,7 +60,7 @@ Setup WebApi as startup project and for x64.
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/1a6ec020-991e-41d3-93ee-42219d735bd5)
 
-Debug Mode
+### Debug Mode
 
 To setup C++ project in debug mode follow the configuration below (right click on Application.CPP -> Properties):
 
