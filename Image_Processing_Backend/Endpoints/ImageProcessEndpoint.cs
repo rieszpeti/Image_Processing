@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.REPR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
@@ -15,9 +14,9 @@ namespace Image_Processing_Backend.Endpoints
             IImageProcessingService service,
             CancellationToken ct = default) =>
             {
-                var image = await service.ProcessImage(new ImageProcessRequest { File = file }, ct);
+                var response = await service.ProcessImage(file, ct);
 
-                return Results.File(image.bytes, $"image/{image.FileExtension}");
+                return Results.File(response.bytes, $"image/{response.FileExtension}");
             })
             .DisableAntiforgery();
         }

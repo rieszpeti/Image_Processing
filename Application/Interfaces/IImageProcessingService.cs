@@ -1,10 +1,10 @@
-﻿using Application.REPR;
+﻿using Application.CSharp.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Interfaces
 {
     public interface IImageProcessingService
     {
-        Task<ImageProcessResponse> ProcessImage(ImageProcessRequest file, CancellationToken cancellationToken);
+        Task<ImageProcessResponse> ProcessImage(IFormFile file, CancellationToken cancellationToken);
     }
 }
