@@ -4,7 +4,7 @@ Image Process with C# webapi with C++ OpenCV module
 
 ## Project Architecture
 
-![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/2e99e2d6-122c-487e-aa53-14c6bf08facd)
+![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/5bf7571c-4fe1-4e76-beed-354bcbbf357a)
 
 This is like an N-tier or Clean Architecture style architecture the layers are separated with a light interface connection through the layers.
 
