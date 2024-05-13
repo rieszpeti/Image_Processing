@@ -1,6 +1,8 @@
-﻿using Application.Interfaces;
+﻿using Application.CSharp.Models;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Image_Processing_Backend.Endpoints
@@ -15,13 +17,36 @@ namespace Image_Processing_Backend.Endpoints
             IImageProcessingService service,
             CancellationToken ct = default) =>
             {
-                logger.LogDebug("Incoming request for image processing.");
+                try
+                {
+                    logger.LogDebug("Incoming request for image processing.");
 
-                var response = await service.ProcessImage(file, ct);
+                    using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
+                    {
+                        var response = await service.ProcessImage(file, linkedCts.Token);
 
-                logger.LogInformation("Image processing completed successfully.");
+                        logger.LogInformation("Image processing completed successfully.");
 
-                return Results.File(response.bytes, $"image/{response.FileExtension}");
+                        return Results.File(response.bytes, $"image/{response.FileExtension}");
+                    }
+                }
+                catch (OperationCanceledException e)
+                {
+                    logger.LogInformation($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+                    return Results.Ok("Operation canceled while processing the image.");
+                }
+                catch (ArgumentException e)
+                {
+                    logger.LogWarning($"{nameof(ArgumentException)} thrown with message: {e.Message}");
+                    return Results.Problem(
+                        title: "An error occurred while processing the image.",
+                        detail: e.Message);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"Image processing failed: {ex.Message}");
+                    return Results.Problem("An error occurred while processing the image.");
+                }
             })
             .DisableAntiforgery(); // unsafe, setup Antiforgery in PROD
         }

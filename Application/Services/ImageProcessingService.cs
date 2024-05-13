@@ -81,6 +81,7 @@ namespace Application.Services
             }
             catch (OperationCanceledException cancel)
             {
+                _logger.LogInformation($"Cancelled: {cancel}");
                 throw;
             }
         }
