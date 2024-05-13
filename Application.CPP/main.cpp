@@ -48,20 +48,22 @@ void ProcessImageCpp(
 	int sigma_y = 5;
 
 	// Apply Gaussian along rows in parallel
-	cv::parallel_for_(cv::Range(0, img.rows), [&](const cv::Range& range) {
+	cv::parallel_for_(cv::Range(0, img.rows), [&](const cv::Range& range) 
+	{
 		for (int r = range.start; r < range.end; r++) {
-			cv::Mat row = img.row(r);
-			cv::GaussianBlur(row, row, cv::Size(kernel_size, 1), sigma_x, 0);
+			cv::Mat inRow = img.row(r);
+			cv::GaussianBlur(inRow, inRow, cv::Size(kernel_size, 1), sigma_x, 0);
 		}
-		});
+	});
 
-	// Apply Gaussian along columns in parallel
-	cv::parallel_for_(cv::Range(0, img.cols), [&](const cv::Range& range) {
-		for (int c = range.start; c < range.end; c++) {
-			cv::Mat col = img.col(c);
-			cv::GaussianBlur(col, col, cv::Size(1, kernel_size), 0, sigma_y);
-		}
-		});
+	//// Apply Gaussian along columns in parallel
+	//cv::parallel_for_(cv::Range(0, img.cols), [&](const cv::Range& range) 
+	//{
+	//	for (int c = range.start; c < range.end; c++) {
+	//		cv::Mat col = img.col(c);
+	//		cv::GaussianBlur(col, col, cv::Size(1, kernel_size), 0, sigma_y);
+	//	}
+	//});
 
 	vector<unsigned char> bytes;
 	cv::imencode(file_extension, img, bytes);
