@@ -4,13 +4,13 @@ Image Process with C# WebApi with C++ OpenCV module
 
 ## Goal of the project
 
-Send image image to a webapi and make some operations with opencv package.
+Send image to a webapi and make some operations with opencv package.
 
 ## Project Architecture
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/17a30514-72c7-4142-b589-abdd0b8c49df)
 
-This is like an N-tier or Clean Architecture style architecture the layers are separated with a light interface connection through the layers.
+This is like an N-tier or Clean Architecture style architecture, because the layers are separated with a light interface connection through the layers.
 
 There are three layers:
   - WebApi
@@ -18,7 +18,7 @@ There are three layers:
   - Application in C++
 
 I kept the WebApi as thin as possible from the endpoint perspective. It is just an interface where the client can send their requests.
-Application in C# basically just prepare and validate the image before it sends to the C++ application. Lastly, the C++ part does the parallel image processing.
+Application in C# basically just prepare and validate the image before it sends to the C++ application. Then, the C++ part does the parallel image processing.
 
 ## Functionalities
 
@@ -92,7 +92,7 @@ To setup C++ project in release mode follow the configuration below (right click
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/974a85cf-9335-486d-986a-f2a087d2ef8a)
 
-Now your project has to run:
+Now your project should run:
 
 Some Postman example:
 
