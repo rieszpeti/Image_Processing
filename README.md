@@ -96,7 +96,11 @@ Now your project should run:
 
 Some Postman example:
 
+Valid Image:
+
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/61a03c71-c55b-4134-88ec-a7afcc9ac25c)
+
+Invalid Image:
 
 ![image](https://github.com/rieszpeti/Image_Processing/assets/40406762/076b3aad-d2de-45df-8b20-f7a225ddf318)
 
