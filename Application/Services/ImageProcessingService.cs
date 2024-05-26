@@ -55,7 +55,7 @@ namespace Application.Services
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    await file.CopyToAsync(memoryStream);
+                    await file.CopyToAsync(memoryStream, cancellationToken);
                     imageData = memoryStream.ToArray();
                     result = new byte[imageData.Length];
 
