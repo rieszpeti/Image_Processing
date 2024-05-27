@@ -41,6 +41,7 @@ namespace ImageProcessApp.Tests
             var inputDirPath = Path.Combine(currentDir, "InputTestImages");
             var outputDirPath = Path.Combine(currentDir, "OutputTestImages");
 
+            //folder check and file count check
             if (Directory.Exists(inputDirPath) && 
                 Directory.Exists(outputDirPath) &&
                 Directory.GetFiles(inputDirPath).Length != 0 &&
@@ -87,8 +88,7 @@ namespace ImageProcessApp.Tests
                             ContentType = $"image/{extension.Trim('.')}",
                             ContentDisposition = $"""form-data; name=\"file\";filename=\"{fileName}\""",
                         };
-                        
-                        // Arrange
+                       
                         var expected = new ImageProcessResponse { Bytes = outputFile, FileExtension = extension.Replace(".", "") };
 
                         // Act
