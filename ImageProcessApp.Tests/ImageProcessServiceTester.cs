@@ -42,10 +42,7 @@ namespace ImageProcessApp.Tests
             var outputDirPath = Path.Combine(currentDir, "OutputTestImages");
 
             //folder check and file count check
-            if (Directory.Exists(inputDirPath) && 
-                Directory.Exists(outputDirPath) &&
-                Directory.GetFiles(inputDirPath).Length != 0 &&
-                Directory.GetFiles(outputDirPath).Length != 0)
+            if (CheckDirectories(inputDirPath, outputDirPath))
             {
                 //Get service
                 var service = new ImageProcessingService(_mockLogger.Object, _mockImageValidator.Object);
@@ -55,18 +52,23 @@ namespace ImageProcessApp.Tests
                 var inputFilePaths = Directory.GetFiles(inputDirPath);
                 var outputFilePaths = Directory.GetFiles(outputDirPath);
 
+                if (CheckIfAtLeastOneFileNameMatch(inputFilePaths, outputFilePaths))
+                {
+                    throw new Exception("Must contain at least 1-1 pictures in the folders with the same name");
+                }
+
                 foreach (var path in inputFilePaths)
                 {
-                    var fileName = Path.GetFileName(path);
+                    var inputFileName = Path.GetFileName(path);
 
-                    var file = outputFilePaths.FirstOrDefault(f => Path.GetFileName(f) == fileName);
+                    var file = outputFilePaths.FirstOrDefault(f => Path.GetFileName(f) == inputFileName);
 
                     byte[] outputFile;
 
                     if (file is null)
                     {
                         break;
-                        //image has to match
+                        //imagename has to match
                     }
                     else
                     {
@@ -82,11 +84,11 @@ namespace ImageProcessApp.Tests
                         stream = new MemoryStream(fileBytes);
                         stream.Position = 0;
 
-                        var formFile = new FormFile(stream, 0, stream.Length, "file", fileName)
+                        var formFile = new FormFile(stream, 0, stream.Length, "file", inputFileName)
                         {
                             Headers = new HeaderDictionary(),
                             ContentType = $"image/{extension.Trim('.')}",
-                            ContentDisposition = $"""form-data; name=\"file\";filename=\"{fileName}\""",
+                            ContentDisposition = $"""form-data; name=\"file\";filename=\"{inputFileName}\""",
                         };
                        
                         var expected = new ImageProcessResponse { Bytes = outputFile, FileExtension = extension.Replace(".", "") };
@@ -107,6 +109,33 @@ namespace ImageProcessApp.Tests
             {
                 throw new Exception("Copy TestImages folder to debug folder in the WebApi project!!!");
             }
+        }
+
+        private bool CheckDirectories(string inputDirPath, string outputDirPath)
+        {
+            return Directory.Exists(inputDirPath) &&
+                Directory.Exists(outputDirPath) &&
+                Directory.GetFiles(inputDirPath).Length != 0 &&
+                Directory.GetFiles(outputDirPath).Length != 0;
+        }
+
+        private bool CheckIfAtLeastOneFileNameMatch(string[] inputFilePaths, string[] outputFilePaths)
+        {
+            foreach (var inputFile in inputFilePaths)
+            {
+                var inputFileName = Path.GetFileName(inputFile);
+
+                foreach (var outputFile in outputFilePaths)
+                {
+                    var outputFileName = Path.GetFileName(outputFile);
+
+                    if (string.Equals(inputFileName, outputFileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }
