@@ -26,48 +26,78 @@ namespace ImageProcessApp.Tests
 
         /// <summary>
         /// Copy TestImages folder to debug folder to the Webapi for test
+        /// Tests the ProcessImage method with valid image files.
         /// </summary>
-        /// <returns></returns>
+        /// <exception cref="Exception">Thrown if the TestImages folder is not found.</exception>
         [Fact]
         public async Task ImageProcessService_TestShouldPass_SendGoodRealImage()
         {
-            //Arrange
+            //Arrange 
+            //copy images to directory to pass images to image processing
             var cancellationToken = new CancellationToken(canceled: false);
 
             var currentDir = Directory.GetCurrentDirectory();
-            var dirPath = Path.Combine(currentDir, "TestImages");
+            var inputDirPath = Path.Combine(currentDir, "InputTestImages");
+            var outputDirPath = Path.Combine(currentDir, "OutputTestImages");
 
-            var files = new List<IFormFile>();
-            using var stream = new MemoryStream();
-
-            if (Directory.Exists(dirPath))
+            if (Directory.Exists(inputDirPath) && Directory.Exists(outputDirPath))
             {
-                var filePaths = Directory.GetFiles(dirPath);
+                //Get service
+                var service = new ImageProcessingService(_mockLogger.Object, _mockImageValidator.Object);
 
-                foreach (var path in filePaths)
+                var stream = new MemoryStream();
+
+                var inputFilePaths = Directory.GetFiles(inputDirPath);
+                var outputFilePaths = Directory.GetFiles(outputDirPath);
+
+                foreach (var path in inputFilePaths)
                 {
-                    if (System.Enum.IsDefined(typeof(EncodingType), Path.GetExtension(path)))
+                    var fileName = Path.GetFileName(path);
+
+                    var file = outputFilePaths.FirstOrDefault(f => Path.GetFileName(f) == fileName);
+
+                    byte[] outputFile;
+
+                    if (file is null)
                     {
-                        stream.ReadAsync(File.ReadAllBytes(path).ToArray());
-                        var formFile = new FormFile(stream, 0, stream.Length, "streamFile", Path.GetFileName(path));
-                        files.Add(formFile);
+                        break;
+                        //image has to match
+                    }
+                    else
+                    {
+                        outputFile = File.ReadAllBytes(file);
+                    }
+                    
+                    var extension = Path.GetExtension(path);
+
+                    if (Enum.TryParse(typeof(EncodingType), extension.TrimStart('.').ToUpper(), true, out var _))
+                    {
+                        var fileBytes = File.ReadAllBytes(path);
+
+                        stream = new MemoryStream(fileBytes);
+                        stream.Position = 0;
+
+                        var formFile = new FormFile(stream, 0, stream.Length, "file", fileName)
+                        {
+                            Headers = new HeaderDictionary(),
+                            ContentType = $"image/{extension.Trim('.')}",
+                            ContentDisposition = $"""form-data; name=\"file\";filename=\"{fileName}\""",
+                        };
+                        
+                        // Arrange
+                        var expected = new ImageProcessResponse { Bytes = outputFile, FileExtension = extension.Replace(".", "") };
+
+                        // Act
+                        var actual = await service.ProcessImage(formFile, cancellationToken);
+
+                        // Assert
+                        Assert.Equal(expected.Bytes, actual.Bytes);
+                        Assert.Equal(expected.FileExtension, actual.FileExtension);
                     }
                 }
 
-                var service = new ImageProcessingService(_mockLogger.Object, _mockImageValidator.Object);
-
-                foreach (var file in files)
-                {
-                    // Arrange
-                    await file.CopyToAsync(stream);
-                    var expected = new ImageProcessResponse { Bytes = stream.ToArray(), FileExtension = Path.GetExtension(file.FileName) };
-
-                    // Act
-                    var actual = await service.ProcessImage(file, cancellationToken);
-
-                    // Assert
-                    Assert.Equal(expected, actual);
-                }
+                stream.Close();
+                stream.Dispose();
             }
             else
             {

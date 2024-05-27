@@ -28,7 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestImages\dog1.png">
+    <None Update="InputTestImages\dog1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OutputTestImages\dog1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TestImages\img.bmp">
@@ -37,7 +40,7 @@
     <None Update="TestImages\img.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestImages\img.png">
+    <None Update="InputTestImages\img.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
