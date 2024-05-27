@@ -73,7 +73,7 @@ namespace ImageProcessApp.Tests
 
             _mockImageProcessingService
                 .Setup(x => x.ProcessImage(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(new ImageProcessResponse { Bytes = new byte[1], FileExtension = ".png" }));
+                .Returns(Task.FromResult(new ImageProcessResponse { Bytes = new byte[1], FileExtension = "png" }));
 
             // Act
             var result = await ImageProcessEndpoint.ProcessImage(_mockLogger.Object, file, _mockImageProcessingService.Object);
