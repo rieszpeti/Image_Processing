@@ -25,10 +25,11 @@ namespace ImageProcessApp.Tests
         private readonly Mock<IImageValidator> _mockImageValidator = new Mock<IImageValidator>();
 
         /// <summary>
-        /// Copy TestImages folder to debug folder to the Webapi for test
         /// Tests the ProcessImage method with valid image files.
+        /// You have to add both of the images to the InputTestImages and OutputTestImages folder with the same name
+        /// Must contain at least 1-1 pictures in the folders
         /// </summary>
-        /// <exception cref="Exception">Thrown if the TestImages folder is not found.</exception>
+        /// <exception cref="Exception">Thrown if the InputTestImages and OutputTestImages folder is not found.</exception>
         [Fact]
         public async Task ImageProcessService_TestShouldPass_SendGoodRealImage()
         {
@@ -40,7 +41,10 @@ namespace ImageProcessApp.Tests
             var inputDirPath = Path.Combine(currentDir, "InputTestImages");
             var outputDirPath = Path.Combine(currentDir, "OutputTestImages");
 
-            if (Directory.Exists(inputDirPath) && Directory.Exists(outputDirPath))
+            if (Directory.Exists(inputDirPath) && 
+                Directory.Exists(outputDirPath) &&
+                Directory.GetFiles(inputDirPath).Length != 0 &&
+                Directory.GetFiles(outputDirPath).Length != 0)
             {
                 //Get service
                 var service = new ImageProcessingService(_mockLogger.Object, _mockImageValidator.Object);
