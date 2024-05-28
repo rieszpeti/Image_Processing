@@ -52,7 +52,7 @@ namespace ImageProcessApp.Tests
                 var inputFilePaths = Directory.GetFiles(inputDirPath);
                 var outputFilePaths = Directory.GetFiles(outputDirPath);
 
-                if (CheckIfAtLeastOneFileNameMatch(inputFilePaths, outputFilePaths))
+                if (!CheckIfAtLeastOneFileNameMatch(inputFilePaths, outputFilePaths))
                 {
                     throw new Exception("Must contain at least 1-1 pictures in the folders with the same name");
                 }
@@ -129,7 +129,7 @@ namespace ImageProcessApp.Tests
                 {
                     var outputFileName = Path.GetFileName(outputFile);
 
-                    if (string.Equals(inputFileName, outputFileName, StringComparison.OrdinalIgnoreCase))
+                    if (inputFileName == outputFileName)
                     {
                         return true;
                     }

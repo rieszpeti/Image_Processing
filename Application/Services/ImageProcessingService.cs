@@ -83,7 +83,7 @@ namespace Application.Services
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    _imageValidator.ValidateEncoding(imagePixels, cancellationToken);
+                    _imageValidator.ValidateEncoding(imagePixels, extension, cancellationToken);
 
                     _logger.LogDebug("Image validation successful.");
 

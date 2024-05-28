@@ -55,7 +55,7 @@ namespace Application.CSharp.ModelValidation
         /// </summary>
         /// <param name="byteArray"></param>
         /// <returns>EncodingType</returns>
-        public void ValidateEncoding(byte[] byteArray, CancellationToken cancellationToken)
+        public void ValidateEncoding(byte[] byteArray, string encoding, CancellationToken cancellationToken)
         {
             const int INT_SIZE = 4; // We only need to check the first four bytes of the file / byte array.
 
@@ -65,12 +65,23 @@ namespace Application.CSharp.ModelValidation
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            encoding = encoding.ToLower().Replace(".", "");
+
             if (png.SequenceEqual(buffer.Take(png.Length)))
             {
+                if (encoding != nameof(png))
+                {
+                    throw new InvalidOperationException("Encoding changed during image manipulation");
+                }
                 _logger.LogInformation("Fileformat: {format}", nameof(png));
             }
             else if (jpg.SequenceEqual(buffer.Take(jpg.Length)))
             {
+                if (encoding != nameof(jpg))
+                {
+                    throw new InvalidOperationException("Encoding changed during image manipulation");
+                }
+
                 _logger.LogInformation("Fileformat: {format}", nameof(jpg));
             }
             else

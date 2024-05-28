@@ -73,8 +73,6 @@ void ProcessImageCpp(
 	//	}
 	//});
 
-	cv::imwrite("C:/Users/SillySharp/Desktop/out.png", img);
-
 	vector<unsigned char> bytes;
 	cv::imencode(file_extension, img, bytes);
 
